@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown } from "lucide-react";
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -51,6 +52,7 @@ function CourseCatalog() {
 
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         <SearchInput className="flex-1" value={query} onChange={setQuery} onBlur={() => query && log.info("Course search", { query, results: filtered.length })} placeholder="Search by title or instructor" label="Search courses" />
+        <div className="relative w-full lg:w-44">
         <select
           value={level}
           onChange={(event) => {
@@ -58,12 +60,14 @@ function CourseCatalog() {
             log.info("Level filter changed", { level: event.target.value });
           }}
           aria-label="Level"
-          className="search-select h-10 rounded-xl border border-transparent bg-subtle px-3 text-sm text-ink transition-all duration-300 hover:border-accent/40 hover:bg-surface focus:border-accent focus:bg-surface focus:outline-none"
+          className="h-10 w-full appearance-none rounded-xl border border-transparent bg-subtle pl-3 pr-9 text-sm text-ink transition-all duration-300 hover:border-accent/40 hover:bg-surface focus:border-accent focus:bg-surface focus:outline-none"
         >
           {LEVELS.map((item) => (
             <option key={item}>{item}</option>
           ))}
         </select>
+          <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted" aria-hidden />
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-1.5">

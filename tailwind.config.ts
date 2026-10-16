@@ -16,6 +16,9 @@ const config: Config = {
         warm: { DEFAULT: "rgb(var(--warm) / <alpha-value>)", hover: "rgb(var(--warm-hover) / <alpha-value>)" },
         onwarm: "rgb(var(--on-warm) / <alpha-value>)",
         peach: "rgb(var(--peach) / <alpha-value>)",
+        gold: "rgb(var(--gold) / <alpha-value>)",
+        sky: "rgb(var(--sky) / <alpha-value>)",
+        plum: "rgb(var(--plum) / <alpha-value>)",
         accent: {
           DEFAULT: "rgb(var(--accent) / <alpha-value>)",
           hover: "rgb(var(--accent-hover) / <alpha-value>)",

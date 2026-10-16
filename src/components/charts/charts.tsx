@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { spring, springSoft } from "@/lib/motion";
 import type { DataPoint } from "@/types";
 
-const SERIES = ["rgb(var(--accent))", "rgb(var(--warm))", "rgb(var(--muted))", "rgb(var(--accent) / 0.5)", "rgb(var(--warm) / 0.5)"];
+const SERIES = ["rgb(var(--accent))", "rgb(var(--warm))", "rgb(var(--sky))", "rgb(var(--gold))", "rgb(var(--plum))"];
 
 export function seriesColor(index: number): string {
   return SERIES[index % SERIES.length];
@@ -106,7 +106,7 @@ export function HorizontalBars({ data, unit = "%", max = 100 }: { data: DataPoin
             </span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-line">
-            <motion.div className="h-full rounded-full" style={{ backgroundColor: seriesColor(index % 2 === 0 ? 0 : 3) }} initial={{ width: 0 }} animate={{ width: `${(point.value / max) * 100}%` }} transition={{ ...springSoft, delay: index * 0.06 }} />
+            <motion.div className="h-full rounded-full" style={{ backgroundColor: seriesColor(index) }} initial={{ width: 0 }} animate={{ width: `${(point.value / max) * 100}%` }} transition={{ ...springSoft, delay: index * 0.06 }} />
           </div>
         </li>
       ))}

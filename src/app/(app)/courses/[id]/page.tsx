@@ -189,7 +189,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
         </AnimatePresence>
       </div>
 
-      <motion.aside variants={fadeUp} className="flex h-fit flex-col gap-4 lg:sticky lg:top-20">
+      <motion.aside variants={fadeUp} className="flex h-fit flex-col gap-4">
         <div className="card-fx rounded-2xl border border-line bg-surface p-4">
           <p className="text-xl font-semibold text-ink">
             Free <span className="text-sm font-normal text-muted line-through">$80 USD</span>

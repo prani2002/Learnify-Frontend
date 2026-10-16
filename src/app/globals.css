@@ -5,10 +5,13 @@
 :root {
   --canvas: 255 255 255;
   --surface: 255 255 255;
-  --subtle: 248 250 252;
-  --line: 226 232 240;
-  --ink: 15 23 42;
-  --muted: 100 116 139;
+  --subtle: 247 244 240;
+  --line: 233 227 219;
+  --ink: 31 27 24;
+  --muted: 120 112 105;
+  --gold: 214 158 46;
+  --sky: 70 110 170;
+  --plum: 139 84 140;
   --accent: 6 95 82;
   --accent-hover: 4 78 68;
   --accent-soft: 226 242 238;
@@ -24,10 +27,13 @@
 :root[data-theme="dark"] {
   --canvas: 9 9 11;
   --surface: 24 24 27;
-  --subtle: 18 18 21;
-  --line: 39 39 42;
-  --ink: 244 244 245;
-  --muted: 161 161 170;
+  --subtle: 28 25 23;
+  --line: 48 43 40;
+  --ink: 245 242 238;
+  --muted: 168 160 152;
+  --gold: 232 182 80;
+  --sky: 120 160 220;
+  --plum: 190 130 190;
   --accent: 45 190 160;
   --accent-hover: 94 214 190;
   --accent-soft: 20 38 36;
@@ -277,3 +283,26 @@ body {
   .card-fx, .card-fx::after, .card-fx .card-chip, .row-fx { transition: none !important; }
   .card-fx:hover .card-chip, .row-fx:hover { transform: none; }
 }
+
+/* ---------- Scrollbars ---------- */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--muted) / 0.35) transparent;
+  }
+}
+
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-corner { background: transparent; }
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--muted) / 0.3);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background-color 200ms ease;
+}
+
+*::-webkit-scrollbar-thumb:hover { background-color: rgb(var(--accent) / 0.7); }
+*::-webkit-scrollbar-thumb:active { background-color: rgb(var(--accent)); }

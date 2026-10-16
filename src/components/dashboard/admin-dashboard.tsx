@@ -13,7 +13,7 @@ import { SearchInput } from "@/components/ui/search-input";
 import { SegmentedTabs } from "@/components/ui/segmented-tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SortHeader, useSort } from "@/components/ui/sortable";
-import { StatCard } from "@/components/ui/stat-card";
+import { StatCard, TONE_CYCLE } from "@/components/ui/stat-card";
 import { useAsync } from "@/components/ui/use-async";
 import { RECENT_ACTIVITY } from "@/data/analytics";
 import { api } from "@/lib/api";
@@ -95,17 +95,17 @@ export function AdminDashboard({ name }: { name: string }) {
       {tab === "analytics" && (
         <motion.div key="analytics" variants={stagger} initial="hidden" animate="visible" className="flex flex-col gap-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {pending ? Array.from({ length: 8 }).map((_, index) => <Skeleton key={index} className="h-[112px] rounded-2xl" />) : analytics.kpis.map((kpi, index) => <StatCard key={kpi.label} {...kpi} icon={KPI_ICONS[index]} goodWhenDown={kpi.label === "Support tickets"} />)}
+            {pending ? Array.from({ length: 8 }).map((_, index) => <Skeleton key={index} className="h-[112px] rounded-2xl" />) : analytics.kpis.map((kpi, index) => <StatCard key={kpi.label} {...kpi} icon={KPI_ICONS[index]} tone={TONE_CYCLE[index % TONE_CYCLE.length]} goodWhenDown={kpi.label === "Support tickets"} />)}
           </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-            <Panel title="Monthly enrollments" description="New course enrollments per month." className="lg:col-span-5">
+            <Panel title="Monthly enrollments" description="New course enrollments per month." className="lg:col-span-4">
               {pending ? <Skeleton className="h-44" /> : <AreaChart data={analytics.enrollmentTrend} />}
             </Panel>
             <Panel title="Active learners" description="Monthly active learners." className="lg:col-span-4">
               {pending ? <Skeleton className="h-44" /> : <AreaChart data={analytics.activeLearnersTrend} color="rgb(var(--warm))" />}
             </Panel>
-            <Panel title="Category share" description="Enrollments by subject." className="lg:col-span-3">
+            <Panel title="Category share" description="Enrollments by subject." className="lg:col-span-4">
               {pending ? <Skeleton className="h-32" /> : <DonutChart data={analytics.categoryShare} centerLabel="5 areas" />}
             </Panel>
           </div>
@@ -193,10 +193,10 @@ export function AdminDashboard({ name }: { name: string }) {
               Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-[112px] rounded-2xl" />)
             ) : (
               <>
-                <StatCard label="Total learners" value={String(data.learners.length)} icon={Users} />
-                <StatCard label="Active" value={String(data.learners.filter((l) => l.status === "Active").length)} icon={BookOpen} />
-                <StatCard label="Needs attention" value={String(atRisk.length)} icon={Target} goodWhenDown trend="down" change={`${atRisk.length} of ${data.learners.length}`} />
-                <StatCard label="Avg. score" value={`${Math.round(data.learners.reduce((sum, l) => sum + l.avgScore, 0) / data.learners.length)}%`} icon={Star} />
+                <StatCard label="Total learners" tone="accent" value={String(data.learners.length)} icon={Users} />
+                <StatCard label="Active" tone="sky" value={String(data.learners.filter((l) => l.status === "Active").length)} icon={BookOpen} />
+                <StatCard label="Needs attention" tone="warm" value={String(atRisk.length)} icon={Target} goodWhenDown trend="down" change={`${atRisk.length} of ${data.learners.length}`} />
+                <StatCard label="Avg. score" tone="gold" value={`${Math.round(data.learners.reduce((sum, l) => sum + l.avgScore, 0) / data.learners.length)}%`} icon={Star} />
               </>
             )}
           </div>

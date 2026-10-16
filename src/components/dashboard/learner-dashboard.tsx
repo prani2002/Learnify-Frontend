@@ -53,12 +53,12 @@ export function LearnerDashboard({ name }: { name: string }) {
           Array.from({ length: 6 }).map((_, index) => <Skeleton key={index} className="h-[112px] rounded-2xl" />)
         ) : (
           <>
-            <StatCard label="In progress" value={String(learner.enrolled - learner.completed)} icon={BookOpen} />
-            <StatCard label="Completed" value={String(learner.completed)} icon={GraduationCap} />
-            <StatCard label="Hours learned" value={String(learner.hours)} change="+12%" trend="up" icon={Clock} />
-            <StatCard label="Day streak" value={String(learner.streak)} icon={Flame} />
-            <StatCard label="Average score" value={`${learner.avgScore}%`} change="+3%" trend="up" icon={Target} />
-            <StatCard label="Certificates" value={String(learner.completed + 2)} icon={Award} />
+            <StatCard label="In progress" tone="sky" value={String(learner.enrolled - learner.completed)} icon={BookOpen} />
+            <StatCard label="Completed" tone="accent" value={String(learner.completed)} icon={GraduationCap} />
+            <StatCard label="Hours learned" tone="warm" value={String(learner.hours)} change="+12%" trend="up" icon={Clock} />
+            <StatCard label="Day streak" tone="gold" value={String(learner.streak)} icon={Flame} />
+            <StatCard label="Average score" tone="plum" value={`${learner.avgScore}%`} change="+3%" trend="up" icon={Target} />
+            <StatCard label="Certificates" tone="accent" value={String(learner.completed + 2)} icon={Award} />
           </>
         )}
       </motion.div>
