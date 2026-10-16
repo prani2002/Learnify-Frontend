@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { X } from "lucide-react";
 import { FAULTS, injectFault, type FaultDefinition, type FaultKind } from "@/lib/faults";
 import { createLogger } from "@/lib/logger";
 import { spring } from "@/lib/motion";
@@ -90,8 +91,14 @@ export function FaultProvider({ children }: { children: React.ReactNode }) {
             <span className="truncate">
               You are currently simulating <strong className="font-semibold">{active.label}</strong>. {active.description}
             </span>
-            <button type="button" onClick={stopSimulation} className="shrink-0 font-medium underline underline-offset-2">
-              Stop simulating
+            <button
+              type="button"
+              onClick={stopSimulation}
+              aria-label="Stop simulating"
+              title="Stop simulating"
+              className="absolute right-3 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full transition-colors hover:bg-black/10"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
             </button>
           </motion.div>
         )}

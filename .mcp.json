@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "app-logs": { "command": "node", "args": ["mcp/logs-server/index.mjs"] }
+  }
+}

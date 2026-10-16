@@ -1,0 +1,18 @@
+{
+  "display_information": {
+    "name": "Learnify",
+    "description": "Learnify production and dev log alerts",
+    "background_color": "#1f2937"
+  },
+  "features": {
+    "bot_user": { "display_name": "Learnify", "always_online": true }
+  },
+  "oauth_config": {
+    "scopes": { "bot": ["incoming-webhook", "chat:write"] }
+  },
+  "settings": {
+    "org_deploy_enabled": false,
+    "socket_mode_enabled": false,
+    "token_rotation_enabled": false
+  }
+}
