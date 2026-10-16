@@ -1,16 +1,16 @@
-export function Panel({ title, description, action, children, className = "" }: { title?: string; description?: string; action?: React.ReactNode; children: React.ReactNode; className?: string }) {
+export function Panel({ title, description, action, children, className = "", bodyClassName = "" }: { title?: string; description?: string; action?: React.ReactNode; children: React.ReactNode; className?: string; bodyClassName?: string }) {
   return (
-    <section className={`rounded-2xl border border-line bg-surface p-6 ${className}`}>
+    <section className={`min-w-0 rounded-2xl border border-line bg-surface p-4 ${className}`}>
       {(title || action) && (
-        <header className="mb-6 flex items-start justify-between gap-4">
-          <div>
-            {title && <h2 className="text-base font-semibold text-ink">{title}</h2>}
-            {description && <p className="mt-1 text-sm text-muted">{description}</p>}
+        <header className="mb-3 flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            {title && <h2 className="text-sm font-semibold text-ink">{title}</h2>}
+            {description && <p className="mt-0.5 text-xs text-muted">{description}</p>}
           </div>
           {action}
         </header>
       )}
-      {children}
+      <div className={bodyClassName}>{children}</div>
     </section>
   );
 }

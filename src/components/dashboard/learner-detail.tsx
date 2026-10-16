@@ -19,7 +19,7 @@ export function LearnerDetail({ learner, onClose }: { learner: LearnerRecord | n
           <motion.aside
             role="dialog"
             aria-label={`${learner.name} statistics`}
-            className="ml-auto flex h-full w-full max-w-lg flex-col gap-6 overflow-y-auto border-l border-line bg-surface p-6"
+            className="ml-auto flex h-full w-full max-w-lg flex-col gap-4 overflow-y-auto border-l border-line bg-surface p-5"
             initial={{ x: "100%" }}
             animate={{ x: 0, transition: spring }}
             exit={{ x: "100%" }}
@@ -39,7 +39,7 @@ export function LearnerDetail({ learner, onClose }: { learner: LearnerRecord | n
               </button>
             </header>
 
-            <dl className="grid grid-cols-3 gap-3">
+            <dl className="grid grid-cols-3 gap-2">
               {[
                 { label: "Hours", value: learner.hours },
                 { label: "Avg score", value: `${learner.avgScore}%` },
@@ -48,7 +48,7 @@ export function LearnerDetail({ learner, onClose }: { learner: LearnerRecord | n
                 { label: "Completed", value: learner.completed },
                 { label: "Last active", value: learner.lastActive },
               ].map((item) => (
-                <div key={item.label} className="rounded-xl border border-line p-3">
+                <div key={item.label} className="rounded-xl border border-line p-2.5">
                   <dt className="text-xs text-muted">{item.label}</dt>
                   <dd className="mt-1 text-base font-semibold text-ink">{item.value}</dd>
                 </div>
@@ -56,13 +56,13 @@ export function LearnerDetail({ learner, onClose }: { learner: LearnerRecord | n
             </dl>
 
             <section>
-              <h3 className="mb-3 text-sm font-semibold text-ink">Hours this week</h3>
+              <h3 className="mb-2 text-sm font-semibold text-ink">Hours this week</h3>
               <BarChart data={learner.weeklyHours.map((value, index) => ({ label: DAYS[index], value }))} height={140} unit="h" />
             </section>
 
             <section>
-              <h3 className="mb-3 text-sm font-semibold text-ink">Course progress</h3>
-              <ul className="flex flex-col gap-4">
+              <h3 className="mb-2 text-sm font-semibold text-ink">Course progress</h3>
+              <ul className="flex flex-col gap-2.5">
                 {learner.courseProgress.map((entry) => (
                   <li key={entry.courseId}>
                     <div className="mb-1 flex justify-between text-sm">
@@ -76,7 +76,7 @@ export function LearnerDetail({ learner, onClose }: { learner: LearnerRecord | n
             </section>
 
             <section>
-              <h3 className="mb-3 text-sm font-semibold text-ink">Skill levels</h3>
+              <h3 className="mb-2 text-sm font-semibold text-ink">Skill levels</h3>
               <HorizontalBars data={learner.skills.map((entry) => ({ label: entry.skill, value: entry.level }))} />
             </section>
           </motion.aside>

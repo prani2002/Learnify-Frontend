@@ -15,12 +15,12 @@ interface AreaChartProps {
   data: DataPoint[];
   format?: (value: number) => string;
   color?: string;
+  height?: number;
 }
 
-export function AreaChart({ data, format = (value) => value.toLocaleString(), color = "rgb(var(--accent))" }: AreaChartProps) {
+export function AreaChart({ data, format = (value) => value.toLocaleString(), color = "rgb(var(--accent))", height = 190 }: AreaChartProps) {
   const [hovered, setHovered] = useState<number | null>(null);
   const width = 600;
-  const height = 240;
   const pad = { top: 16, right: 12, bottom: 28, left: 48 };
   const max = Math.max(...data.map((point) => point.value));
   const min = Math.min(...data.map((point) => point.value));
@@ -66,7 +66,7 @@ export function AreaChart({ data, format = (value) => value.toLocaleString(), co
   );
 }
 
-export function BarChart({ data, height = 192, unit = "", highlightMax = true }: { data: DataPoint[]; height?: number; unit?: string; highlightMax?: boolean }) {
+export function BarChart({ data, height = 150, unit = "", highlightMax = true }: { data: DataPoint[]; height?: number; unit?: string; highlightMax?: boolean }) {
   const max = Math.max(...data.map((point) => point.value), 1);
   return (
     <div className="flex items-end gap-3" style={{ height }} role="img" aria-label="Bar chart">
@@ -95,18 +95,18 @@ export function BarChart({ data, height = 192, unit = "", highlightMax = true }:
 
 export function HorizontalBars({ data, unit = "%", max = 100 }: { data: DataPoint[]; unit?: string; max?: number }) {
   return (
-    <ul className="flex flex-col gap-4">
+    <ul className="flex flex-col gap-2.5">
       {data.map((point, index) => (
-        <li key={point.label}>
-          <div className="mb-1 flex justify-between text-sm">
+        <li key={point.label} className="row-fx -mx-2 rounded-lg px-2 py-0.5">
+          <div className="mb-1 flex justify-between text-xs">
             <span className="text-ink">{point.label}</span>
             <span className="text-muted">
               {point.value}
               {unit}
             </span>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-line">
-            <motion.div className="h-full rounded-full" style={{ backgroundColor: seriesColor(0) }} initial={{ width: 0 }} animate={{ width: `${(point.value / max) * 100}%` }} transition={{ ...springSoft, delay: index * 0.06 }} />
+          <div className="h-1.5 overflow-hidden rounded-full bg-line">
+            <motion.div className="h-full rounded-full" style={{ backgroundColor: seriesColor(index % 2 === 0 ? 0 : 3) }} initial={{ width: 0 }} animate={{ width: `${(point.value / max) * 100}%` }} transition={{ ...springSoft, delay: index * 0.06 }} />
           </div>
         </li>
       ))}
@@ -115,13 +115,14 @@ export function HorizontalBars({ data, unit = "%", max = 100 }: { data: DataPoin
 }
 
 export function DonutChart({ data, centerLabel }: { data: DataPoint[]; centerLabel?: string }) {
+  const [active, setActive] = useState<number | null>(null);
   const total = data.reduce((sum, point) => sum + point.value, 0);
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
   const offsets = data.map((_, index) => data.slice(0, index).reduce((sum, point) => sum + (point.value / total) * circumference, 0));
   return (
-    <div className="flex flex-col items-center gap-6">
-      <svg viewBox="0 0 140 140" className="h-40 w-40 shrink-0 -rotate-90" role="img" aria-label="Distribution chart">
+    <div className="flex items-center gap-4">
+      <svg viewBox="0 0 140 140" className="h-28 w-28 shrink-0 -rotate-90" role="img" aria-label="Distribution chart">
         <circle cx={70} cy={70} r={radius} fill="none" stroke="rgb(var(--line))" strokeWidth={18} />
         {data.map((point, index) => {
           const length = (point.value / total) * circumference;
@@ -133,26 +134,25 @@ export function DonutChart({ data, centerLabel }: { data: DataPoint[]; centerLab
               r={radius}
               fill="none"
               stroke={seriesColor(index)}
-              strokeWidth={18}
+              strokeWidth={active === index ? 22 : 18}
               strokeDashoffset={-offsets[index]}
+              style={{ opacity: active === null || active === index ? 1 : 0.35, transition: "opacity 250ms ease, stroke-width 250ms ease" }}
               initial={{ strokeDasharray: `0 ${circumference}` }}
               animate={{ strokeDasharray: `${Math.max(length - 2, 0)} ${circumference}` }}
               transition={{ ...spring, delay: index * 0.1 }}
             />
           );
         })}
-        {centerLabel && (
-          <text x={70} y={70} textAnchor="middle" dominantBaseline="middle" fontSize={16} fontWeight={600} fill="rgb(var(--ink))" transform="rotate(90 70 70)">
-            {centerLabel}
-          </text>
-        )}
+        <text x={70} y={70} textAnchor="middle" dominantBaseline="middle" fontSize={active === null ? 15 : 22} fontWeight={600} fill="rgb(var(--ink))" transform="rotate(90 70 70)">
+          {active === null ? centerLabel : `${data[active].value}%`}
+        </text>
       </svg>
-      <ul className="flex w-full flex-col gap-2 text-sm">
+      <ul className="flex min-w-0 flex-1 flex-col gap-1 text-xs">
         {data.map((point, index) => (
-          <li key={point.label} className="flex items-center justify-between gap-4">
-            <span className="inline-flex items-center gap-2 text-ink">
-              <span className="h-3 w-3 rounded-sm" style={{ backgroundColor: seriesColor(index) }} aria-hidden />
-              {point.label}
+          <li key={point.label} onMouseEnter={() => setActive(index)} onMouseLeave={() => setActive(null)} className="row-fx -mx-1.5 flex items-center justify-between gap-2 rounded-md px-1.5 py-0.5">
+            <span className="inline-flex min-w-0 items-center gap-2 text-ink">
+              <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ backgroundColor: seriesColor(index) }} aria-hidden />
+              <span className="truncate">{point.label}</span>
             </span>
             <span className="text-muted">{point.value}%</span>
           </li>
@@ -162,20 +162,63 @@ export function DonutChart({ data, centerLabel }: { data: DataPoint[]; centerLab
   );
 }
 
-export function ActivityHeatmap({ weeks = 14, seed = 7 }: { weeks?: number; seed?: number }) {
+/** Deterministic pseudo-random series used for KPI sparklines. */
+export function seedSeries(seed: string, trend: "up" | "down", points = 12): number[] {
+  let hash = 0;
+  for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  return Array.from({ length: points }, (_, index) => {
+    const noise = Math.abs(Math.sin(hash + index * 7.31) * 10000) % 1;
+    const slope = (trend === "up" ? index : points - index) / points;
+    return 20 + slope * 50 + noise * 22;
+  });
+}
+
+export function Sparkline({ data, color = "rgb(var(--accent))", className = "" }: { data: number[]; color?: string; className?: string }) {
+  const width = 64;
+  const height = 32;
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const x = (index: number) => (index / (data.length - 1)) * width;
+  const y = (value: number) => 3 + (1 - (value - min) / (max - min || 1)) * (height - 6);
+  const line = data.map((value, index) => `${index === 0 ? "M" : "L"}${x(index).toFixed(1)},${y(value).toFixed(1)}`).join(" ");
+  return (
+    <svg viewBox={`0 0 ${width} ${height}`} className={className} aria-hidden preserveAspectRatio="none">
+      <motion.path d={line} fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, ease: "easeOut" }} />
+    </svg>
+  );
+}
+
+export function RingProgress({ value, size = 96, label }: { value: number; size?: number; label?: string }) {
+  const radius = 42;
+  const circumference = 2 * Math.PI * radius;
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }} role="img" aria-label={`${value}% complete`}>
+      <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
+        <circle cx={50} cy={50} r={radius} fill="none" stroke="rgb(var(--line))" strokeWidth={9} />
+        <motion.circle cx={50} cy={50} r={radius} fill="none" stroke="rgb(var(--accent))" strokeWidth={9} strokeLinecap="round" strokeDasharray={circumference} initial={{ strokeDashoffset: circumference }} animate={{ strokeDashoffset: circumference * (1 - value / 100) }} transition={{ duration: 1.1, ease: "easeOut" }} />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center leading-tight">
+        <span className="text-lg font-semibold text-ink">{value}%</span>
+        {label && <span className="text-[10px] text-muted">{label}</span>}
+      </div>
+    </div>
+  );
+}
+
+export function ActivityHeatmap({ weeks = 20, seed = 7 }: { weeks?: number; seed?: number }) {
   const cells = Array.from({ length: weeks * 7 }, (_, index) => {
     const value = Math.abs(Math.sin(index * 12.9898 + seed) * 43758.5453) % 1;
     const weekday = index % 7;
     return weekday > 4 ? value * 0.5 : value;
   });
   return (
-    <div className="flex gap-1.5 overflow-x-auto" role="img" aria-label="Learning activity over the last weeks">
+    <div className="flex gap-1 overflow-x-auto" role="img" aria-label="Learning activity over the last weeks">
       {Array.from({ length: weeks }, (_, week) => (
-        <div key={week} className="flex flex-col gap-1.5">
+        <div key={week} className="flex flex-col gap-1">
           {cells.slice(week * 7, week * 7 + 7).map((value, day) => (
             <motion.span
               key={day}
-              className="block h-4 w-4 rounded-[4px] sm:h-5 sm:w-5"
+              className="block h-3.5 w-3.5 rounded-[4px] transition-transform duration-200 hover:scale-125"
               style={{ backgroundColor: value < 0.15 ? "rgb(var(--line))" : `rgb(var(--accent) / ${0.25 + value * 0.75})` }}
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: 1, scale: 1 }}

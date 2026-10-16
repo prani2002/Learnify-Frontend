@@ -66,3 +66,12 @@ export const PORTAL_ANALYTICS: PortalAnalytics = {
     { label: "Completed course", value: 27 },
   ],
 };
+
+export const RECENT_ACTIVITY: readonly { id: string; who: string; action: string; target: string; when: string; tone: "accent" | "warm" }[] = [
+  { id: "r1", who: "Kenji Watanabe", action: "completed", target: "Node.js Backend", when: "12m ago", tone: "accent" },
+  { id: "r2", who: "Grace Kim", action: "earned a certificate in", target: "UX Design Basics", when: "38m ago", tone: "accent" },
+  { id: "r3", who: "Noah Peterson", action: "has been inactive on", target: "Python for Data", when: "2h ago", tone: "warm" },
+  { id: "r4", who: "Ines Carvalho", action: "enrolled in", target: "Machine Learning Intro", when: "3h ago", tone: "accent" },
+  { id: "r5", who: "Fatima Nasser", action: "dropped below goal in", target: "HTML and CSS", when: "5h ago", tone: "warm" },
+  { id: "r6", who: "Jordan Fields", action: "scored 98% on", target: "Python quiz 4", when: "6h ago", tone: "accent" },
+];

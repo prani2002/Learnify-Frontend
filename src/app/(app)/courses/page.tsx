@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
 import { CourseCard } from "@/components/courses/course-card";
+import { SearchInput } from "@/components/ui/search-input";
 import { CourseCardSkeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { useAsync } from "@/components/ui/use-async";
@@ -16,8 +17,16 @@ const log = createLogger("ui.courses");
 const LEVELS = ["All levels", "Beginner", "Intermediate", "Advanced"];
 
 export default function CoursesPage() {
+  return (
+    <Suspense fallback={null}>
+      <CourseCatalog />
+    </Suspense>
+  );
+}
+
+function CourseCatalog() {
   const { data, error, loading, reload } = useAsync("course catalog", api.listCourses);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(useSearchParams().get("q") ?? "");
   const [category, setCategory] = useState("All");
   const [level, setLevel] = useState(LEVELS[0]);
 
@@ -34,24 +43,14 @@ export default function CoursesPage() {
   if (error) return <ErrorState message={error.message} onRetry={reload} />;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-2xl font-semibold text-ink">Course catalog</h1>
-        <p className="mt-1 text-muted">Explore courses taught by industry practitioners.</p>
+        <h1 className="text-xl font-semibold text-ink">Course catalog</h1>
+        <p className="text-sm text-muted">Explore courses taught by industry practitioners.</p>
       </div>
 
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-        <label className="relative flex-1">
-          <span className="sr-only">Search courses</span>
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" aria-hidden />
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            onBlur={() => query && log.info("Course search", { query, results: filtered.length })}
-            placeholder="Search by title or instructor"
-            className="h-10 w-full rounded-lg border border-line bg-surface pl-9 pr-3 text-sm text-ink transition-colors focus:border-accent"
-          />
-        </label>
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+        <SearchInput className="flex-1" value={query} onChange={setQuery} onBlur={() => query && log.info("Course search", { query, results: filtered.length })} placeholder="Search by title or instructor" label="Search courses" />
         <select
           value={level}
           onChange={(event) => {
@@ -59,7 +58,7 @@ export default function CoursesPage() {
             log.info("Level filter changed", { level: event.target.value });
           }}
           aria-label="Level"
-          className="h-10 rounded-lg border border-line bg-surface px-3 text-sm text-ink"
+          className="search-select h-10 rounded-xl border border-transparent bg-subtle px-3 text-sm text-ink transition-all duration-300 hover:border-accent/40 hover:bg-surface focus:border-accent focus:bg-surface focus:outline-none"
         >
           {LEVELS.map((item) => (
             <option key={item}>{item}</option>
@@ -67,7 +66,7 @@ export default function CoursesPage() {
         </select>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5">
         {["All", ...COURSE_CATEGORIES].map((item) => (
           <button
             key={item}
@@ -76,14 +75,14 @@ export default function CoursesPage() {
               setCategory(item);
               log.info("Category filter changed", { category: item });
             }}
-            className={`rounded-full px-3 py-1 text-sm transition-colors ${category === item ? "bg-accent-soft text-accent" : "bg-subtle text-muted hover:bg-accent-soft hover:text-accent"}`}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-300 hover:-translate-y-0.5 ${category === item ? "bg-accent text-accent-ink" : "bg-surface text-muted hover:bg-accent-soft hover:text-accent"}`}
           >
             {item}
           </button>
         ))}
       </div>
 
-      <motion.div key={`${category}-${level}-${query}-${loading}`} variants={stagger} initial="hidden" animate="visible" className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <motion.div key={`${category}-${level}-${query}-${loading}`} variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {loading
           ? Array.from({ length: 6 }).map((_, index) => <CourseCardSkeleton key={index} />)
           : filtered.map((course) => <CourseCard key={course.id} course={course} />)}

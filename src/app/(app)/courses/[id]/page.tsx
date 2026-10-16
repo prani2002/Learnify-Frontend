@@ -40,7 +40,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
 
   if (loading || !course) {
     return (
-      <div className="grid gap-8 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="flex flex-col gap-4 lg:col-span-2">
           <Skeleton className="aspect-video rounded-2xl" />
           <Skeleton className="h-8 w-2/3" />
@@ -62,8 +62,8 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
   ];
 
   return (
-    <motion.div variants={stagger} initial="hidden" animate="visible" className="grid gap-8 lg:grid-cols-3">
-      <div className="flex flex-col gap-6 lg:col-span-2">
+    <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <div className="flex flex-col gap-4 lg:col-span-2">
         <motion.div variants={fadeUp} className="aspect-video overflow-hidden rounded-2xl border border-line bg-subtle">
           {videoId && (
             <iframe
@@ -83,7 +83,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
             <Badge tone="accent">{course.category}</Badge>
             <Badge>{course.level}</Badge>
           </div>
-          <h1 className="text-3xl font-semibold tracking-tight text-ink">{course.title}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-ink">{course.title}</h1>
           <div className="flex items-center gap-3 text-sm text-muted">
             <Image src={instructor.image} alt="" width={32} height={32} unoptimized className="h-8 w-8 rounded-full object-cover" />
             <span>{course.instructor}</span>
@@ -93,7 +93,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
           </div>
         </motion.div>
 
-        <motion.div variants={fadeUp} role="tablist" aria-label="Course sections" className="flex gap-1 overflow-x-auto rounded-xl bg-subtle p-1">
+        <motion.div variants={fadeUp} role="tablist" aria-label="Course sections" className="flex gap-1 overflow-x-auto rounded-xl bg-surface p-1">
           {TABS.map((item) => {
             const active = tab === item.id;
             return (
@@ -106,7 +106,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                   setTab(item.id);
                   log.info("Course tab changed", { courseId: course.id, tab: item.id });
                 }}
-                className={`relative flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-colors ${active ? "text-accent-ink" : "text-muted hover:text-ink"}`}
+                className={`relative flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 py-1.5 text-sm font-medium transition-colors ${active ? "text-accent-ink" : "text-muted hover:text-ink"}`}
               >
                 {active && <motion.span layoutId="course-tab" transition={spring} className="absolute inset-0 rounded-lg bg-accent" />}
                 <item.icon size={16} className="relative" aria-hidden />
@@ -117,13 +117,13 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
         </motion.div>
 
         <AnimatePresence mode="wait">
-          <motion.div key={tab} role="tabpanel" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0, transition: spring }} exit={{ opacity: 0, y: -4, transition: { duration: 0.1 } }} className="rounded-2xl border border-line bg-surface p-6">
+          <motion.div key={tab} role="tabpanel" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0, transition: spring }} exit={{ opacity: 0, y: -4, transition: { duration: 0.1 } }} className="card-fx rounded-2xl border border-line bg-surface p-4">
             {tab === "overview" && (
               <div className="flex flex-col gap-6">
                 <p className="text-muted">{course.summary}</p>
                 <div>
                   <h2 className="text-lg font-semibold text-ink">What you will learn</h2>
-                  <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {course.outcomes.map((outcome) => (
                       <li key={outcome} className="flex items-start gap-2 text-sm text-muted">
                         <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-warm" aria-hidden />
@@ -149,7 +149,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                               window.scrollTo({ top: 0, behavior: "smooth" });
                               log.info("Lesson selected", { courseId: course.id, lessonId: lesson.id });
                             }}
-                            className={`flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-sm transition-colors hover:bg-subtle ${videoId === lesson.videoId ? "text-accent" : "text-muted"}`}
+                            className={`row-fx flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm ${videoId === lesson.videoId ? "text-accent" : "text-muted"}`}
                           >
                             <PlayCircle size={18} aria-hidden />
                             <span className="flex-1">{lesson.title}</span>
@@ -189,31 +189,65 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
         </AnimatePresence>
       </div>
 
-      <motion.aside variants={fadeUp} className="h-fit rounded-2xl border border-line bg-subtle p-6 lg:sticky lg:top-24">
-        <p className="text-2xl font-semibold text-ink">
-          Free <span className="text-sm font-normal text-muted line-through">$80 USD</span>
-        </p>
-        <dl className="mt-6 flex flex-col divide-y divide-line border-t border-line">
-          {details.map((detail) => (
-            <div key={detail.label} className="flex items-center justify-between py-3 text-sm">
-              <dt className="inline-flex items-center gap-3 text-muted">
-                <detail.icon size={16} aria-hidden /> {detail.label}
-              </dt>
-              <dd className="font-medium text-ink">{detail.value}</dd>
-            </div>
-          ))}
-        </dl>
-        <Button
-          className="mt-4 w-full"
-          size="lg"
-          disabled={enrolled}
-          onClick={() => {
-            setEnrolled(true);
-            log.info("Enrollment confirmed", { courseId: course.id });
-          }}
-        >
-          {enrolled ? "Enrolled" : "Start now"}
-        </Button>
+      <motion.aside variants={fadeUp} className="flex h-fit flex-col gap-4 lg:sticky lg:top-20">
+        <div className="card-fx rounded-2xl border border-line bg-surface p-4">
+          <p className="text-xl font-semibold text-ink">
+            Free <span className="text-sm font-normal text-muted line-through">$80 USD</span>
+          </p>
+          <dl className="mt-3 flex flex-col divide-y divide-line border-t border-line">
+            {details.map((detail) => (
+              <div key={detail.label} className="flex items-center justify-between py-2 text-sm">
+                <dt className="inline-flex items-center gap-3 text-muted">
+                  <detail.icon size={15} aria-hidden /> {detail.label}
+                </dt>
+                <dd className="font-medium text-ink">{detail.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <Button
+            className="mt-3 w-full"
+            disabled={enrolled}
+            onClick={() => {
+              setEnrolled(true);
+              log.info("Enrollment confirmed", { courseId: course.id });
+            }}
+          >
+            {enrolled ? "Enrolled" : "Start now"}
+          </Button>
+        </div>
+
+        <div className="card-fx rounded-2xl border border-line bg-surface p-4">
+          <h2 className="mb-2 text-sm font-semibold text-ink">Course content</h2>
+          <div className="flex max-h-72 flex-col gap-2 overflow-y-auto pr-1">
+            {course.modules.map((module) => (
+              <div key={module.id}>
+                <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-muted">{module.title}</p>
+                <ul className="flex flex-col">
+                  {module.lessons.map((lesson) => {
+                    const playing = videoId === lesson.videoId;
+                    return (
+                      <li key={lesson.id}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setVideoId(lesson.videoId);
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                            log.info("Lesson selected", { courseId: course.id, lessonId: lesson.id });
+                          }}
+                          className={`row-fx flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left text-xs ${playing ? "bg-accent-soft text-accent" : "text-muted"}`}
+                        >
+                          <PlayCircle size={15} className="shrink-0" aria-hidden />
+                          <span className="flex-1 truncate">{lesson.title}</span>
+                          <span className="shrink-0 text-[11px]">{lesson.durationMinutes}m</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
       </motion.aside>
     </motion.div>
   );

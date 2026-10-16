@@ -182,3 +182,98 @@ body {
 .wave-field input:focus ~ .wave-bar::after { width: 50%; }
 
 .wave-field input:focus { outline: none; }
+
+/* ---------- Card hover effects ---------- */
+.card-fx {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: border-color 350ms ease, box-shadow 450ms ease, background-color 350ms ease;
+}
+
+/* accent line that sweeps across the top edge */
+.card-fx::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 2px;
+  width: 100%;
+  background: rgb(var(--accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 550ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card-fx:hover {
+  border-color: rgb(var(--accent) / 0.5);
+}
+
+.card-fx .card-chip {
+  transition: background-color 350ms ease, color 350ms ease, transform 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.card-fx:hover .card-chip {
+  background-color: rgb(var(--accent));
+  color: rgb(var(--accent-ink));
+  transform: scale(1.1) rotate(-6deg);
+}
+
+.card-fx .card-spark { transition: opacity 350ms ease, transform 450ms ease; opacity: 0.75; }
+.card-fx:hover .card-spark { opacity: 1; transform: translateY(-2px); }
+
+/* list rows inside panels */
+.row-fx {
+  position: relative;
+  transition: background-color 250ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 300ms ease;
+}
+.row-fx:hover {
+  background-color: rgb(var(--accent) / 0.07);
+  transform: translateX(3px);
+}
+
+/* ---------- Search input ---------- */
+.search-field {
+  position: relative;
+  display: block;
+}
+
+.search-field input {
+  width: 100%;
+  background-color: rgb(var(--subtle));
+  border: 1px solid transparent;
+    transition: background-color 250ms ease, border-color 250ms ease;
+}
+
+.search-field input::placeholder { color: rgb(var(--muted)); transition: opacity 250ms ease, transform 250ms ease; }
+
+.search-field input:hover {
+  background-color: rgb(var(--surface));
+  border-color: rgb(var(--accent) / 0.35);
+}
+
+.search-field input:focus {
+  outline: none;
+  background-color: rgb(var(--surface));
+  border-color: rgb(var(--accent));
+}
+
+.search-field input:focus::placeholder { opacity: 0.5; transform: translateX(4px); }
+
+.search-field .search-icon { transition: color 250ms ease, transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.search-field:hover .search-icon { color: rgb(var(--accent)); }
+.search-field:focus-within .search-icon { color: rgb(var(--accent)); transform: translateY(-50%) scale(1.15); }
+
+/* ---------- Table sorting ---------- */
+.sort-btn { transition: color 200ms ease; }
+.sort-btn:hover { color: rgb(var(--accent)); }
+.sort-btn .sort-icon { transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 200ms ease; opacity: 0.35; }
+.sort-btn:hover .sort-icon { opacity: 0.8; }
+.sort-btn[data-active="true"] { color: rgb(var(--accent)); }
+.sort-btn[data-active="true"] .sort-icon { opacity: 1; }
+.sort-btn[data-dir="desc"] .sort-icon { transform: rotate(180deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card-fx, .card-fx::after, .card-fx .card-chip, .row-fx { transition: none !important; }
+  .card-fx:hover .card-chip, .row-fx:hover { transform: none; }
+}
